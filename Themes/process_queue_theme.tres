@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://6bcl1h3fkd1c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cfo5x"]
+bg_color = Color(0.22152385, 0.08937778, 0.051012278, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+
+[resource]
+Label/font_sizes/font_size = 32
+Label/styles/normal = SubResource("StyleBoxFlat_cfo5x")

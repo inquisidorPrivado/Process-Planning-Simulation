@@ -1,0 +1,332 @@
+[gd_scene load_steps=10 format=3 uid="uid://bsgns8108rctn"]
+
+[ext_resource type="Shader" uid="uid://ul7omu0o07cm" path="res://Shader/balatro_shader.gdshader" id="1_3i8yi"]
+[ext_resource type="Script" uid="uid://dgsmful4ypv5" path="res://Scripts/process_planning.gd" id="1_nmuom"]
+[ext_resource type="PackedScene" uid="uid://3rgrro1araw3" path="res://Scenes/process.tscn" id="2_5awn5"]
+[ext_resource type="Script" uid="uid://cqp7d8e1kjlf5" path="res://Scripts/manager.gd" id="2_66nc1"]
+[ext_resource type="Theme" uid="uid://6bcl1h3fkd1c" path="res://Themes/process_queue_theme.tres" id="2_and7h"]
+[ext_resource type="Script" uid="uid://dfwu5j5y32xx8" path="res://Scripts/algorithms.gd" id="3_b8eun"]
+[ext_resource type="Theme" uid="uid://dbcqmh6prtg74" path="res://Themes/menu_theme.tres" id="3_nt6kf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5awn5"]
+shader = ExtResource("1_3i8yi")
+shader_parameter/spin_rotation_speed = 2.0
+shader_parameter/move_speed = 7.0
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/colour_1 = Color(0.871, 0.267, 0.231, 1)
+shader_parameter/colour_2 = Color(0, 0.42, 0.706, 1)
+shader_parameter/colour_3 = Color(0.086, 0.137, 0.145, 1)
+shader_parameter/contrast = 3.5
+shader_parameter/lighting = 0.4
+shader_parameter/spin_amount = 0.25
+shader_parameter/pixel_filter = 740.0
+shader_parameter/is_rotating = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nmuom"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.03277284, 0.0036932891, 0.005096885, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="ProcessPlanning" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nmuom")
+
+[node name="Manager" type="Node" parent="." node_paths=PackedStringArray("algorithms_node", "contedor_cpu", "contedor_queue", "run_simulation", "pause_simulation", "quantum_text", "algorithm_button")]
+script = ExtResource("2_66nc1")
+algorithms_node = NodePath("../Algorithms")
+contedor_cpu = NodePath("../Interface/VBoxContainer/CPU/VBoxContainer/HBoxContainer")
+contedor_queue = NodePath("../Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer")
+run_simulation = NodePath("../Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer/RunSimulation")
+pause_simulation = NodePath("../Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer/PauseSimulation")
+quantum_text = NodePath("../Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms/VBoxContainer/Quantum")
+algorithm_button = NodePath("../Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms/VBoxContainer/OptionButton")
+
+[node name="Algorithms" type="Node" parent="." node_paths=PackedStringArray("time_counter", "contedor_cpu", "contedor_queue")]
+script = ExtResource("3_b8eun")
+time_counter = NodePath("../Timer")
+time_selected = 0.5
+contedor_cpu = NodePath("../Interface/VBoxContainer/CPU/VBoxContainer/HBoxContainer")
+contedor_queue = NodePath("../Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_5awn5")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.0
+offset_right = -19.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CPU" type="Panel" parent="Interface/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme = ExtResource("2_and7h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/CPU"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="QueueTitle" type="Panel" parent="Interface/VBoxContainer/CPU/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="QueueLabel" type="Label" parent="Interface/VBoxContainer/CPU/VBoxContainer/QueueTitle"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 6
+text = "CPU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/VBoxContainer/CPU/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+alignment = 1
+
+[node name="Process" parent="Interface/VBoxContainer/CPU/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="ProcessQueue" type="Panel" parent="Interface/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_and7h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/ProcessQueue"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="QueueTitle" type="Panel" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="QueueLabel" type="Label" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/QueueTitle"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 6
+text = "COLA DE PROCESOS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Process" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process2" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process3" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process4" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process5" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process6" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Process7" parent="Interface/VBoxContainer/ProcessQueue/VBoxContainer/HBoxContainer" instance=ExtResource("2_5awn5")]
+layout_mode = 2
+
+[node name="Menu" type="Panel" parent="Interface/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_nt6kf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/VBoxContainer/Menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Title01" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer/Title01"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[wave]CONTEXTO[/wave]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title02" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer/Title02"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[shake]ALGORITMO[/shake]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title03" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer/Title03"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[tornado]MÁS OPCIONES[/tornado]
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/VBoxContainer/Menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="ChangeContext" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseSimulation" type="Button" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Pausar simulación"
+
+[node name="RunSimulation" type="Button" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Correr simulación"
+
+[node name="Algorithms" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 23
+
+[node name="OptionButton" type="OptionButton" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+item_count = 3
+popup/item_0/text = "FCFS"
+popup/item_0/id = 0
+popup/item_1/text = "SJF"
+popup/item_1/id = 2
+popup/item_2/text = "Round Robin"
+popup/item_2/id = 1
+
+[node name="Quantum" type="Label" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_nmuom")
+text = "QUANTUM: 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Options" type="Panel" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Options"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChangeContext" type="Button" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Options/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Nueva simulación"
+
+[node name="Quit" type="Button" parent="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Options/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Salir del programa"
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="pressed" from="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer/PauseSimulation" to="Manager" method="_on_pause_simulation_pressed"]
+[connection signal="pressed" from="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/ChangeContext/VBoxContainer/RunSimulation" to="Manager" method="_on_run_simulation_pressed"]
+[connection signal="item_selected" from="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Algorithms/VBoxContainer/OptionButton" to="Manager" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Options/VBoxContainer/ChangeContext" to="." method="_on_change_context_pressed"]
+[connection signal="pressed" from="Interface/VBoxContainer/Menu/VBoxContainer/HBoxContainer2/Options/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="timeout" from="Timer" to="Algorithms" method="_on_timer_timeout"]
