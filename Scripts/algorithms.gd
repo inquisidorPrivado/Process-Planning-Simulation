@@ -14,7 +14,7 @@ Este Script contiene los tres algoritmos, además del timer
 # Estado interno
 var initial_total: int = 0        # cantidad de procesos que había al iniciar
 var completed_count: int = 0     # cuántos ya terminaron
-var is_running: bool = false
+#var is_running: bool = false
 
 
 
@@ -23,15 +23,15 @@ var is_running: bool = false
 # -----------------------------------------------------
 # `processes` debe ser el array que devuelve harvest_processes() (datos iniciales)
 func run_fcfs(processes: Array) -> void:
-	if is_running:
+	if GlobalManager.is_running:
 		print("⚠️ El algoritmo ya está en ejecución.")
 		return
 
 	# Guardamos cuántos procesos había al inicio (no cambia después)
 	initial_total = processes.size()
 	completed_count = 0
-	is_running = true
 	GlobalManager.is_running = true
+	
 
 	# Orden inicial (si quieres mantener FCFS por tiempo puedes ordenar aquí)
 	processes.sort_custom(func(a, b): return a["time"] < b["time"])
@@ -106,15 +106,15 @@ func _move_next_to_cpu() -> bool:
 #  Timer: cada tick reduce 1 unidad al primer proceso activo del CPU
 # -----------------------------------------------------
 func _on_timer_timeout() -> void:
-	if not is_running:
+	if not GlobalManager.is_running:
 		return
 
 	# Si ya completamos todos los procesos iniciales, terminar
 	if completed_count >= initial_total and initial_total > 0:
 		print("✅ Todos los procesos han terminado.")
 		time_counter.stop()
-		is_running = false
 		GlobalManager.is_running = false
+		
 		return
 
 	# Ejecutar solo un proceso por tick: el primer slot de CPU que tenga trabajo
@@ -156,8 +156,8 @@ func _on_timer_timeout() -> void:
 				# Ya completados
 				print("🏁 Todos los procesos terminados.")
 				time_counter.stop()
-				is_running = false
 				GlobalManager.is_running = false
+				
 
 
 # -----------------------------------------------------
