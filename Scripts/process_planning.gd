@@ -1,3 +1,4 @@
+#process_planning.gd
 extends Control
 
 #Este contenedor contiene los 7 slots para alojar procesos

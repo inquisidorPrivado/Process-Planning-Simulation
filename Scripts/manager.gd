@@ -2,7 +2,7 @@
 extends Node
 '''
 Este Script contiene el sistema que maneja el funcionamiento de los botones y la utilización
-de algoritmos (pausa o corre el algoritmo)
+de algoritmos (pausa o corre la simulación)
 '''
 
 #Este algoritmo contiene los algoritmos, solo debemos enviarle lo que necesita desd3e este Script

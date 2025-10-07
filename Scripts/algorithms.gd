@@ -23,9 +23,6 @@ var completed_count: int = 0     # cuántos ya terminaron
 # -----------------------------------------------------
 # `processes` debe ser el array que devuelve harvest_processes() (datos iniciales)
 func run_fcfs(processes: Array) -> void:
-	if GlobalManager.is_running:
-		print("⚠️ El algoritmo ya está en ejecución.")
-		return
 
 	# Guardamos cuántos procesos había al inicio (no cambia después)
 	initial_total = processes.size()
@@ -33,7 +30,7 @@ func run_fcfs(processes: Array) -> void:
 	GlobalManager.is_running = true
 	
 
-	# Orden inicial (si quieres mantener FCFS por tiempo puedes ordenar aquí)
+	# Orden inicial
 	processes.sort_custom(func(a, b): return a["time"] < b["time"])
 
 	# Rellenamos visualmente CPU + Queue con el orden inicial
@@ -42,7 +39,7 @@ func run_fcfs(processes: Array) -> void:
 	# Iniciamos el timer
 	time_counter.wait_time = time_selected
 	time_counter.start()
-	print("▶️ FCFS iniciado con", initial_total, "procesos.")
+	#print("FCFS iniciado con", initial_total, "procesos.")
 
 
 # -----------------------------------------------------
@@ -93,7 +90,7 @@ func _move_next_to_cpu() -> bool:
 
 				# Limpiar el slot de la cola (ya no debe verse)
 				_clear_slot(qslot)
-				print("🧩 Moved to CPU:", cpu_slot.current_name)
+				#print("Moved to CPU:", cpu_slot.current_name)
 				return true
 			else:
 				# No hay procesos en queue
@@ -106,12 +103,13 @@ func _move_next_to_cpu() -> bool:
 #  Timer: cada tick reduce 1 unidad al primer proceso activo del CPU
 # -----------------------------------------------------
 func _on_timer_timeout() -> void:
+	#if que detiene al timer
 	if not GlobalManager.is_running:
 		return
 
 	# Si ya completamos todos los procesos iniciales, terminar
 	if completed_count >= initial_total and initial_total > 0:
-		print("✅ Todos los procesos han terminado.")
+		print("Todos los procesos han terminado.")
 		time_counter.stop()
 		GlobalManager.is_running = false
 		
@@ -126,12 +124,12 @@ func _on_timer_timeout() -> void:
 			# Reducir
 			slot.current_time -= 1
 			slot.process_time_text.text = str(slot.current_time) + " h"
-			print("⌛ Ejecutando:", slot.current_name, "| Tiempo restante:", slot.current_time)
+			print("Ejecutando:", slot.current_name, "| Tiempo restante:", slot.current_time)
 			executed = true
 
 			# Si terminó, limpiar y aumentar contador completados
 			if slot.current_time <= 0:
-				print("✅ Proceso completado:", slot.current_name)
+				print("Proceso completado:", slot.current_name)
 				_clear_slot(slot)
 				completed_count += 1
 
@@ -146,15 +144,15 @@ func _on_timer_timeout() -> void:
 		# Intenta mover uno desde queue si hay
 		if _move_next_to_cpu():
 			# logrado mover uno, se ejecutará en el siguiente tick
-			print("🔄 Se colocó un proceso en CPU desde la queue.")
+			print("Se colocó un proceso en CPU desde la queue.")
 		else:
 			# No hay procesos en queue ni en CPU
 			# Si aún faltan procesos por completar según initial_total, estamos "esperando" que el usuario coloque procesos en la queue
 			if completed_count < initial_total:
-				print("⏳ Esperando procesos en la queue... (completados:", completed_count, "/", initial_total, ")")
+				print("Esperando procesos en la queue... (completados:", completed_count, "/", initial_total, ")")
 			else:
 				# Ya completados
-				print("🏁 Todos los procesos terminados.")
+				print("Todos los procesos terminados.")
 				time_counter.stop()
 				GlobalManager.is_running = false
 				
