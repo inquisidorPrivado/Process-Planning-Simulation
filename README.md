@@ -1,2 +1,3 @@
 # Process-Planning-Simulation
-El siguiente proyecto solo cuenta con el algoritmo FCFS (First Come First Serve). Falta implementar SJF (Shortest Job First) y Round Robin.
+## Objetivo general
+El propósito del proyecto es simular visual y lúdicamente el funcionamiento de los algoritmos de planificación de procesos utilizados en sistemas operativos, permitiendo que el usuario experimente cómo el CPU administra y ejecuta tareas según distintos métodos de planificación.
